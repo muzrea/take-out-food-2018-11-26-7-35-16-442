@@ -34,4 +34,12 @@ function getItemsPrice(inputsInformation, allItems) {
   return inputsInformation;
 }
 
+function getNondiscountSum(inputsInformation) {
+  let nondiscountSum = 0;
+  for (let item of inputsInformation) {
+    nondiscountSum += item.sum;
+  }
+  return nondiscountSum;
+}
+
 module.exports = bestCharge;
