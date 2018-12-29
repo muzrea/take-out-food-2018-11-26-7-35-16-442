@@ -8,4 +8,30 @@ function bestCharge(selectedItems) {
   return /*TODO*/;
 }
 
+function processInput(inputs) {
+  let inputsInformation = [];
+  let i = 0;
+  for (let item of inputs) {
+    let temp = item.split(' x ');
+    inputsInformation[i] = {};
+    inputsInformation[i].id = temp[0];
+    inputsInformation[i].number = temp[1];
+    i++;
+  }
+  return inputsInformation;
+}
+
+function getItemsPrice(inputsInformation, allItems) {
+  for (let item of inputsInformation) {
+    for (let element of allItems) {
+      if (item.id === element.id) {
+        item.name = element.name;
+        item.price = element.price;
+        item.sum = item.number * element.price;
+      }
+    }
+  }
+  return inputsInformation;
+}
+
 module.exports = bestCharge;
