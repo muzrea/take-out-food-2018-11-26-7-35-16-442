@@ -101,4 +101,77 @@ function ownDiscountItem(inputsInformation, promotions) {
   return result;
 }
 
+function bestCharge(inputs) {
+  function getBestCharge(inputs, allItems, promotions) {
+    let inputsInformation = processInput(inputs);
+    inputsInformation = getItemsPrice(inputsInformation, allItems);
+    let nondiscountSum = getNondiscountSum(inputsInformation);
+    let isproductdiscount = ownDiscountItem(inputsInformation, promotions);
+    let isReduction = nondiscountSum >= 30;
+    if (isproductdiscount && isReduction) {
+      let reductionItems = reduction(inputsInformation, nondiscountSum);
+      let productDiscountItems = productDiscount(inputsInformation, nondiscountSum, promotions);
+      if (reductionItems.allSum <= productDiscountItems.allSum) {
+        return reductionItems;
+      } else {
+        return productDiscountItems;
+      }
+    } else if (isReduction) {
+      return reduction(inputsInformation, nondiscountSum);
+
+    } else if (isproductdiscount) {
+      return productDiscount(inputsInformation, nondiscountSum, promotions);
+
+    } else {
+      return inputsInformation;
+    }
+  }
+
+  function printProducts(productItems) {
+    let printItems = '';
+    for (let m in productItems) {
+      if (m > productItems.length - 1) {
+        printItems +=
+          `${productItems[m].name} x ${productItems[m].number} = ${productItems[m].sum}元
+`;
+      }
+      printItems = `${printItems}
+${productItems[m].name} x ${productItems[m].number} = ${productItems[m].sum}元`;
+    }
+    return printItems;
+  }
+
+  let settledItems = getBestCharge(inputs, allItems, promotions);
+  let printItems = '';
+  let order = '';
+  if (settledItems instanceof Array) {
+    printItems = printProducts(settledItems);
+    order =
+      `============= 订餐明细 =============${printItems}
+-----------------------------------
+总计：${getNondiscountSum(settledItems)}元
+===================================`;
+  } else if (settledItems.discountType === "reductionPromotion") {
+    printItems = printProducts(settledItems.items);
+    order = `============= 订餐明细 =============${printItems}
+-----------------------------------
+使用优惠:
+满30减6元，省6元
+-----------------------------------
+总计：${settledItems.allSum}元
+===================================`;
+  } else if (settledItems.discountType === "productPromotion") {
+    printItems = printProducts(settledItems.items);
+    let discountItem = settledItems.discountProduct.join('，');
+    order = `============= 订餐明细 =============${printItems}
+-----------------------------------
+使用优惠:
+指定菜品半价(${discountItem})，省${settledItems.discountSum}元
+-----------------------------------
+总计：${settledItems.allSum}元
+===================================`;
+  }
+  return order;
+}
+
 module.exports = bestCharge;
