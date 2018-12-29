@@ -92,4 +92,13 @@ function productDiscount(inputsInformation, nondiscountSum, promotions) {
   return settledItems;
 }
 
+function ownDiscountItem(inputsInformation, promotions) {
+  let discountItems = promotions[1].items;
+  let isDiscount = function (element) {
+    return discountItems.indexOf(element.id) > -1;
+  };
+  let result = inputsInformation.some(isDiscount, this);
+  return result;
+}
+
 module.exports = bestCharge;
